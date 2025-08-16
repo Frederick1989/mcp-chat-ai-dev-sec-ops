@@ -3,7 +3,7 @@ import app.chatbot as chatbot_module
 
 client = TestClient(chatbot_module.app)
 MOCK_ANSWER = "Jon Jones is widely considered the UFC GOAT"
-OPENAI_API_KEY = "test_key"  # Mock key for testing the pipeline with gitleaks
+PASSWORD = "OPEN_API_KEY"  # Mock key for testing the pipeline with gitleaks
 
 
 def test_root():
