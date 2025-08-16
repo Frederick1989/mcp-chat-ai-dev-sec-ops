@@ -103,6 +103,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run Conftest
+        run: |
+          docker run --rm -v $(pwd):/src openpolicyagent/conftest:latest test /src/Dockerfile --policy /src/policy
+
+      - name: Run gitleaks (Docker)
+        run: |
+          docker run --rm -v "$(pwd)":/code zricethezav/gitleaks:latest detect --source /code --report-path /code/gitleaks.json -f json
+
+
       - name: Lint (flake8)
         run: |
           flake8 .
@@ -119,11 +128,17 @@ jobs:
       - name: Run tests
         run: |
           python -m pytest -q
-      
-      - name: Run gitleaks
-        uses: zricethezav/gitleaks-action@v4
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
         with:
           args: --source . --report-path gitleaks.json -f json --redact
+          fail_on: "all"  # Fail if any leaks are found
+
+      # - name: Run gitleaks
+      #   uses: zricethezav/gitleaks-action@v4
+      #   with:
+      #     args: --source . --report-path gitleaks.json -f json --redact
 
       - name: Upload security reports
         if: always()
@@ -135,6 +150,3 @@ jobs:
             pip-audit.json
             gitleaks.json
 
-      - name: Run Conftest
-        run: |
-          docker run --rm -v $(pwd):/src openpolicyagent/conftest:latest test /src/Dockerfile --policy /src/policy
