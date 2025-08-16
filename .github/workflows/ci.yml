@@ -56,6 +56,7 @@ jobs:
           languages: python
       - uses: github/codeql-action/analyze@v3
 
+
   container-scan:
     runs-on: ubuntu-latest
     permissions:
@@ -102,10 +103,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # - name: Lint (flake8)
-      #   run: |
-      #     flake8 .
+      - name: Lint (flake8)
+        run: |
+          flake8 .
 
+      - name: Dependency vulnerability scan (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt --progress-spinner=off --format=json -o pip-audit.json || true
+
+        
       - name: Static security scan (Bandit)
         run: |
           bandit -r app -lll -f json -o bandit-report.json || true

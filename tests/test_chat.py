@@ -8,8 +8,8 @@ client = TestClient(chatbot_module.app)
 
 def test_root():
     r = client.get("/")
-    assert r.status_code == 200
-    assert r.json() == {"status": "ok"}
+    assert r.status_code == 200 # nosec B101
+    assert r.json() == {"status": "ok"} # nosec B101
 
 
 def test_search_and_summarize(monkeypatch):
@@ -31,5 +31,5 @@ def test_search_and_summarize(monkeypatch):
     monkeypatch.setattr('app.chatbot.pipeline', mock_pipeline)
     
     response = client.post("/chat", json={"text": "Who is the UFC GOAT?"})
-    assert response.status_code == 200
-    assert "Jon Jones" in response.json()["reply"]
+    assert response.status_code == 200 # nosec B101
+    assert "Jon Jones" in response.json()["reply"] # nosec B101

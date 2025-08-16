@@ -15,7 +15,7 @@ A FastAPI-based question-answering system about UFC champions and GOAT discussio
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mcp-chat-ai-dev-sec-ops.git
+git clone https://github.com/Frederick1989/mcp-chat-ai-dev-sec-ops.git
 cd mcp-chat-ai-dev-sec-ops
 
 # Create and activate virtual environment
@@ -24,7 +24,6 @@ source venv/bin/activate  # On macOS/Linux
 
 # Install dependencies
 pip install -r requirements.txt
-pip install -r requirements-dev.txt  # For development
 
 # Run the API locally
 uvicorn app.chatbot:app --reload
@@ -87,7 +86,6 @@ curl -X POST "http://localhost:8000/chat" \
 │   └── workflows/         # CI pipeline
 ├── Dockerfile            # Multi-stage build
 ├── requirements.txt      # Production dependencies
-└── requirements-dev.txt  # Development dependencies
 ```
 
 ## Testing
