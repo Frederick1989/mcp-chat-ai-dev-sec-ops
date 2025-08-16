@@ -1,4 +1,4 @@
-# UFC Q&A Chatbot with DevSecOps Practices
+# Q&A Chatbot with DevSecOps Practices
 
 A FastAPI-based question-answering system about UFC champions and GOAT discussions, demonstrating modern DevSecOps practices and secure containerization.
 
