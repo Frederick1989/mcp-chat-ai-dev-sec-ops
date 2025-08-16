@@ -1,0 +1,65 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+env.bak/
+venv.bak/
+
+# Environment files
+.env
+.env.* 
+
+# Pip / build artifacts
+pip-log.txt
+pip-delete-this-directory.txt
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Caches
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+__pypackages__/
+
+# Test & coverage
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# IDEs / editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Jupyter
+.ipynb_checkpoints
+
+# Docker artifacts
+*.tar
+docker-compose.override.yml
+
+# CI / security reports
+bandit-report.json
+pip-audit.json
+
+# Local model or data folders (if you ever place them in repo root)
+models/
+hf_models/
+data/
