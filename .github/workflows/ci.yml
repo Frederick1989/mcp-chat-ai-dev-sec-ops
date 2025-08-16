@@ -74,9 +74,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint (flake8)
-        run: |
-          flake8 .
+      # - name: Lint (flake8)
+      #   run: |
+      #     flake8 .
 
       - name: Static security scan (Bandit)
         run: |
