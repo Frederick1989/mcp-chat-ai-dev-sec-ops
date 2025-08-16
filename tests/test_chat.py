@@ -5,6 +5,7 @@ client = TestClient(chatbot_module.app)
 MOCK_ANSWER = "Jon Jones is widely considered the UFC GOAT"
 OPENAI_API_KEY = "test_key"  # Mock key for testing the pipeline with gitleaks
 
+
 def test_root():
     r = client.get("/")
     assert r.status_code == 200  # nosec B101
@@ -34,4 +35,3 @@ def test_search_and_summarize(monkeypatch):
     response = client.post("/chat", json={"text": "Who is the UFC GOAT?"})
     assert response.status_code == 200   # nosec B101
     assert "Jon Jones" in response.json()["reply"]   # nosec B101
-
