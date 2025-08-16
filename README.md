@@ -1,4 +1,4 @@
-# UFC Q&A Chatbot with DevSecOps Practices
+# Q&A Chatbot with DevSecOps Practices
 
 A FastAPI-based question-answering system about UFC champions and GOAT discussions, demonstrating modern DevSecOps practices and secure containerization.
 
@@ -15,7 +15,7 @@ A FastAPI-based question-answering system about UFC champions and GOAT discussio
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mcp-chat-ai-dev-sec-ops.git
+git clone https://github.com/Frederick1989/mcp-chat-ai-dev-sec-ops.git
 cd mcp-chat-ai-dev-sec-ops
 
 # Create and activate virtual environment
@@ -24,7 +24,6 @@ source venv/bin/activate  # On macOS/Linux
 
 # Install dependencies
 pip install -r requirements.txt
-pip install -r requirements-dev.txt  # For development
 
 # Run the API locally
 uvicorn app.chatbot:app --reload
@@ -52,28 +51,98 @@ curl -X POST "http://localhost:8000/chat" \
      -d '{"text": "Who is considered the UFC GOAT?"}'
 ```
 
-## Security Features
+# DevSecOps Practices Demo
 
-- Multi-stage Docker builds for minimal attack surface
-- Dependency vulnerability scanning (pip-audit)
-- Static code analysis (Bandit)
-- Code quality checks (flake8)
-- Automated security reporting in CI
-- No credentials in container
-- Minimal base images
+> Demonstrating modern DevSecOps practices and security tooling using a FastAPI application.
 
-## Development Workflow
+##  Security Features
+
+### Static Analysis (SAST)
+```bash
+# Run Bandit security scanner
+bandit -r app -ll -f json -o bandit-report.json
+```
+
+### Container Security
+```bash
+# Validate Dockerfile with Conftest
+docker run --rm -v "$(pwd)":/src \
+  openpolicyagent/conftest:latest \
+  test /src/Dockerfile --policy /src/policy
+```
+
+### Dependency Scanning
+```bash
+# Check for vulnerabilities
+pip-audit -r requirements.txt --format json -o audit.json
+```
+
+##  Quick Start
+
+```bash
+# Setup development environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+## 📋 Security Policies 
+
+### Dockerfile Rules (OPA/Conftest)
+-  Base images must be pinned
+-  No ADD commands (use COPY)
+-  No secrets in ENV
+-  No exposed SSH ports
+-  Non-root USER required
+
+### Branch Protection
+Required checks:
+- [ ] SAST scan
+- [ ] Container scan  
+- [ ] Dependency audit
+- [ ] Policy validation
+
+## 🔄 Development Workflow
 
 1. Create feature branch
-2. Make changes
-3. Run tests locally: `python -m pytest`
-4. Run security checks:
-   ```bash
-   bandit -r app
-   pip-audit
-   flake8
-   ```
-5. Create PR to trigger CI pipeline
+2. Run security checks:
+```bash
+# Run all checks (or use make)
+./scripts/security-checks.sh
+
+# Individual checks
+bandit -r app
+pip-audit
+conftest test Dockerfile
+```
+3. Create PR with passing checks
+4. Review & merge
+
+## 🛠 Available Scripts
+
+```bash
+make security-checks  # All security tools
+make test            # Run tests 
+make lint           # Run linters
+make build          # Build container
+```
+
+## 📦 Container Builds
+
+```dockerfile
+# Multi-stage secure build
+FROM python:3.11-slim AS builder
+# ...see Dockerfile for details
+```
+
+## 🔍 CI/CD Security
+
+Key workflows:
+- `.github/workflows/ci.yml` - Main CI checks
+- security and container scans
 
 ## Project Structure
 
@@ -87,7 +156,6 @@ curl -X POST "http://localhost:8000/chat" \
 │   └── workflows/         # CI pipeline
 ├── Dockerfile            # Multi-stage build
 ├── requirements.txt      # Production dependencies
-└── requirements-dev.txt  # Development dependencies
 ```
 
 ## Testing
