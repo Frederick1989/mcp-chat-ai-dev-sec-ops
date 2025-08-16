@@ -56,6 +56,14 @@ jobs:
           languages: python
       - uses: github/codeql-action/analyze@v3
 
+      - name: Run Conftest
+        run: |
+          docker run --rm -v $(pwd):/src openpolicyagent/conftest:latest test /src/Dockerfile --policy /src/policy
+
+      - name: Run gitleaks (Docker)
+        run: |
+          docker run --rm -v "$(pwd)":/code zricethezav/gitleaks:latest detect --source /code --report-path /code/gitleaks.json -f json
+
 
   container-scan:
     runs-on: ubuntu-latest
@@ -102,14 +110,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Conftest
-        run: |
-          docker run --rm -v $(pwd):/src openpolicyagent/conftest:latest test /src/Dockerfile --policy /src/policy
-
-      - name: Run gitleaks (Docker)
-        run: |
-          docker run --rm -v "$(pwd)":/code zricethezav/gitleaks:latest detect --source /code --report-path /code/gitleaks.json -f json
 
 
       - name: Lint (flake8)
