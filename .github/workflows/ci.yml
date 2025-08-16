@@ -107,12 +107,7 @@ jobs:
         run: |
           flake8 .
 
-      - name: Dependency vulnerability scan (pip-audit)
-        run: |
-          pip install pip-audit
-          pip-audit -r requirements.txt --progress-spinner=off --format=json -o pip-audit.json || true
 
-        
       - name: Static security scan (Bandit)
         run: |
           bandit -r app -lll -f json -o bandit-report.json || true
@@ -124,6 +119,11 @@ jobs:
       - name: Run tests
         run: |
           python -m pytest -q
+      
+      - name: Run gitleaks
+        uses: zricethezav/gitleaks-action@v4
+        with:
+          args: --source . --report-path gitleaks.json -f json --redact
 
       - name: Upload security reports
         if: always()
@@ -133,3 +133,8 @@ jobs:
           path: |
             bandit-report.json
             pip-audit.json
+            gitleaks.json
+
+      - name: Run Conftest
+        run: |
+          docker run --rm -v $(pwd):/src openpolicyagent/conftest:latest test /src/Dockerfile --policy /src/policy
