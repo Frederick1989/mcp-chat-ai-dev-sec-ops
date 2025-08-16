@@ -1,10 +1,9 @@
 from fastapi.testclient import TestClient
 import app.chatbot as chatbot_module
-from hypothesis import given, strategies as st
 
 client = TestClient(chatbot_module.app)
 MOCK_ANSWER = "Jon Jones is widely considered the UFC GOAT"
-
+OPENAI_API_KEY = "test_key"  # Mock key for testing the pipeline with gitleaks
 
 def test_root():
     r = client.get("/")
@@ -36,8 +35,3 @@ def test_search_and_summarize(monkeypatch):
     assert response.status_code == 200   # nosec B101
     assert "Jon Jones" in response.json()["reply"]   # nosec B101
 
-
-# pytest + hypothesis example
-# @given(st.text())
-# def test_chat_handles_input(s):
-#     client.post("/chat", json={"text": s})
