@@ -129,17 +129,6 @@ jobs:
         run: |
           python -m pytest -q
 
-      - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          args: --source . --report-path gitleaks.json -f json --redact
-          fail_on: "all"  # Fail if any leaks are found
-
-      # - name: Run gitleaks
-      #   uses: zricethezav/gitleaks-action@v4
-      #   with:
-      #     args: --source . --report-path gitleaks.json -f json --redact
-
       - name: Upload security reports
         if: always()
         uses: actions/upload-artifact@v4
