@@ -8,13 +8,41 @@ jobs:
   sast-secrets:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set BASE and HEAD SHAs
+        id: shas
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
+            echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+          else
+            # for push events, compare against origin/main (ensure it's fetched)
+            git fetch origin main --depth=1 || true
+            BASE=$(git rev-parse origin/main 2>/dev/null || echo "")
+            echo "BASE_SHA=$BASE" >> $GITHUB_ENV
+            echo "HEAD_SHA=${{ github.sha }}" >> $GITHUB_ENV
+          fi
+
+      - name: Skip scan if base and head are identical
+        run: |
+          if [ "${BASE_SHA}" = "${HEAD_SHA}" ] || [ -z "${BASE_SHA}" ]; then
+            echo "Base and head are the same or base missing; skipping TruffleHog scan."
+            echo "SKIP_TRUFFLEHOG=1" >> $GITHUB_ENV
+          else
+            echo "SKIP_TRUFFLEHOG=0" >> $GITHUB_ENV
+          fi
+
       - name: Run TruffleHog OSS
+        if: env.SKIP_TRUFFLEHOG != '1'
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
-          head: HEAD
+          base: ${{ env.BASE_SHA }}
+          head: ${{ env.HEAD_SHA }}
           extra_args: --debug --only-verified
 
   code-ql:
