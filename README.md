@@ -111,3 +111,26 @@ MIT
 ## Security
 
 Report vulnerabilities via GitHub Security tab or contact maintainers directly.
+
+## Pull requests, CI and branch protection
+- The repo includes a GitHub Actions workflow (.github/workflows/ci.yml) named "CI" that runs on push and pull_request.
+- When a PR is opened the "CI" job runs tests, linting and security scans (bandit, pip-audit).  
+- Configure branch protection on your main branch to require the "CI" status check to pass and to require PR reviews — this will block merging if any checks fail or tests fail.
+
+Quick steps (GitHub web UI)
+1. Go to the repository → Settings → Branches → Branch protection rules → Add rule.
+2. Set "Branch name pattern" to `main` (or your protected branch).
+3. Enable "Require status checks to pass before merging" and select `CI`.
+4. (Optional) Enable "Require pull request reviews before merging" and set required approvals.
+5. Save changes.
+
+Example using GitHub CLI (replace OWNER and REPO, requires gh auth):
+```shell
+gh api \
+  -X PUT /repos/OWNER/REPO/branches/main/protection \
+  -F required_status_checks='{"strict":true,"contexts":["CI"]}' \
+  -F enforce_admins=true \
+  -F required_pull_request_reviews='{"required_approving_review_count":1}'
+```
+
+Result: any PR will trigger the CI workflow and GitHub will block merges to the protected branch until the CI checks and required reviews
